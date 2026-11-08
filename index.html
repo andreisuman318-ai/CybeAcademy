@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="ro" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAcademy Master Edition - Ethical Hacking & Linux RO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: JetBrains Mono & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            green: '#00ff66',
+                            darkgreen: '#003b15',
+                            cyan: '#00f0ff',
+                            darkcyan: '#00363a',
+                            purple: '#8b5cf6',
+                            darkpurple: '#2e1065',
+                            red: '#ff0055',
+                            dark: '#070a13',
+                            card: '#0f172a',
+                            border: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Matrix & Cyber Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070a13;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
+        }
+        .glow-green {
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.25);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+        }
+        .glow-purple {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+        }
+        .terminal-shadow {
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 255, 102, 0.15);
+        }
+        /* Matrix CRT Scanline Effect */
+        .scanlines {
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            ), linear-gradient(
+                90deg,
+                rgba(255, 0, 0, 0.03),
+                rgba(0, 255, 0, 0.01),
+                rgba(0, 0, 255, 0.03)
+            );
+            background-size: 100% 4px, 6px 100%;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans selection:bg-cyber-green selection:text-black bg-slate-950">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+                    <div class="w-10 h-10 rounded-lg bg-slate-950 border border-cyber-green/50 flex items-center justify-center text-cyber-green font-mono text-xl font-bold glow-green">
+                        &gt;_
+                    </div>
+                    <div>
+                        <span class="font-mono font-bold text-lg tracking-wider text-white">CYBER<span class="text-cyber-green">ACADEMY</span> <span class="text-xs px-1.5 py-0.5 rounded bg-cyber-purple/20 text-cyber-purple border border-cyber-purple/40 font-mono">MASTER</span></span>
+                        <span class="text-[10px] block text-slate-400 font-mono tracking-widest uppercase">Ethical Hacking & Security OS</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-2 rounded-md text-xs font-medium transition-all text-cyber-green bg-slate-800 border border-cyber-green/30">
+                        <i class="fa-solid fa-chart-pie mr-1.5"></i>Dashboard
+                    </button>
+                    <button onclick="switchTab('modules')" id="nav-modules" class="nav-btn px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-graduation-cap mr-1.5"></i>Module & Cursuri
+                    </button>
+                    <button onclick="switchTab('quests')" id="nav-quests" class="nav-btn px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-crosshairs mr-1.5"></i>Misiuni CTF
+                    </button>
+                    <button onclick="switchTab('terminal')" id="nav-terminal" class="nav-btn px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-mono">
+                        <i class="fa-solid fa-terminal mr-1.5 text-cyber-green"></i>Terminal Linux
+                    </button>
+                    <button onclick="switchTab('badges')" id="nav-badges" class="nav-btn px-3 py-2 rounded-md text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-award mr-1.5 text-yellow-400"></i>Trofee
+                    </button>
+                </nav>
+
+                <!-- XP & Stats Bar -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center space-x-3">
+                        <div class="flex items-center space-x-1.5">
+                            <i class="fa-solid fa-bolt text-yellow-400 text-xs"></i>
+                            <span id="user-xp" class="font-mono font-bold text-yellow-400 text-xs">0 XP</span>
+                        </div>
+                        <div class="h-3 w-px bg-slate-800"></div>
+                        <div class="flex items-center space-x-1.5">
+                            <i class="fa-solid fa-shield-halved text-cyber-cyan text-xs"></i>
+                            <span id="user-rank" class="font-mono text-[11px] text-cyber-cyan font-semibold">Novice</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="md:hidden border-t border-slate-800 flex justify-around p-2 bg-slate-950 text-xs">
+            <button onclick="switchTab('dashboard')" class="p-1.5 text-slate-300 flex flex-col items-center"><i class="fa-solid fa-chart-pie mb-1"></i>Dash</button>
+            <button onclick="switchTab('modules')" class="p-1.5 text-slate-300 flex flex-col items-center"><i class="fa-solid fa-graduation-cap mb-1"></i>Cursuri</button>
+            <button onclick="switchTab('quests')" class="p-1.5 text-slate-300 flex flex-col items-center"><i class="fa-solid fa-crosshairs mb-1"></i>CTF</button>
+            <button onclick="switchTab('terminal')" class="p-1.5 text-cyber-green flex flex-col items-center font-mono"><i class="fa-solid fa-terminal mb-1"></i>Linux</button>
+            <button onclick="switchTab('badges')" class="p-1.5 text-yellow-400 flex flex-col items-center"><i class="fa-solid fa-award mb-1"></i>Trofee</button>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-6 md:p-8 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-cyber-green/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-cyber-green/10 text-cyber-green border border-cyber-green/30 mb-3">
+                        <span class="w-2 h-2 rounded-full bg-cyber-green mr-1.5 animate-pulse"></span>
+                        MASTERCLASS EDUCATIV INTERACTIV
+                    </span>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight text-white mb-3">
+                        Devino Expert în Securitate Cibernetică & Ethical Hacking
+                    </h1>
+                    <p class="text-slate-400 text-sm md:text-base mb-6 leading-relaxed">
+                        De la arhitectura de nivel jos a calculatoarelor și kernel-ul Linux, până la atacuri cibernetice avansate (SQLi, XSS, Ransomware, Reverse Engineering) și analiză forensică de rețea.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('modules')" class="px-5 py-2.5 rounded-lg bg-cyber-green hover:bg-emerald-400 text-slate-950 font-bold text-xs font-mono transition-all flex items-center glow-green">
+                            <i class="fa-solid fa-play mr-2"></i> EXPLOREAZĂ MODULELE
+                        </button>
+                        <button onclick="switchTab('terminal')" class="px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 font-mono text-xs border border-slate-700 transition-all flex items-center">
+                            <i class="fa-solid fa-terminal mr-2 text-cyber-green"></i> TERMINAL BASH (CTF)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gamification & Level Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Level Progress Card -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-slate-400 text-xs font-mono">PROGRES NIVEL</span>
+                            <span id="rank-badge" class="px-2 py-0.5 rounded bg-cyber-green/10 text-cyber-green font-mono text-xs border border-cyber-green/30">Lvl 1</span>
+                        </div>
+                        <h3 id="dash-rank-name" class="text-xl font-bold text-white mb-1">Novice Explorer</h3>
+                        <p class="text-xs text-slate-400">Parcurge lectiile si rezolvă provocările CTF din terminal.</p>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs font-mono mb-1">
+                            <span class="text-slate-400">XP Acumulat</span>
+                            <span id="xp-text" class="text-cyber-green">0 / 50 XP</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2.5 border border-slate-800">
+                            <div id="xp-bar" class="bg-gradient-to-r from-cyber-green via-cyber-cyan to-cyber-purple h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
+                    <span class="text-slate-400 text-xs font-mono mb-3 uppercase">Statistici generale</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
+                            <div class="text-slate-400 text-[11px] mb-1">Quiz-uri Rezolvate</div>
+                            <div id="stat-quizzes" class="text-xl font-mono font-bold text-cyber-cyan">0 / 6</div>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
+                            <div class="text-slate-400 text-[11px] mb-1">Misiuni CTF</div>
+                            <div id="stat-quests" class="text-xl font-mono font-bold text-cyber-green">0 / 4</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-[11px] text-slate-400 flex items-center">
+                        <i class="fa-solid fa-award text-yellow-400 mr-1.5"></i>
+                        <span>Insigne deblocate: <b id="stat-badges-count" class="text-white">0 / 6</b></span>
+                    </div>
+                </div>
+
+                <!-- Daily Fun Fact Box -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-slate-800/30 text-7xl font-mono select-none">#</div>
+                    <div>
+                        <div class="flex items-center space-x-2 text-yellow-400 mb-2">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span class="text-xs font-mono uppercase tracking-wider font-semibold">Studiu de Caz / Fun Fact</span>
+                        </div>
+                        <p id="daily-fact" class="text-xs text-slate-300 leading-relaxed italic">
+                            "Stuxnet (2010) a fost primul vierme cibernetic militar cunoscut ce a distrus fizic centrifugele nucleare din Iran, modificându-le viteza de rotație fără ca operatorii să observe pe monitoare."
+                        </p>
+                    </div>
+                    <button onclick="nextFact()" class="mt-4 self-start text-xs font-mono text-cyber-cyan hover:underline flex items-center">
+                        Următorul Fact <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Learning Roadmap -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-cubes text-cyber-green mr-2"></i> Traseul Educațional Master (6 Module)
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="roadmap-grid">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MODULES & LESSONS -->
+        <section id="tab-modules" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Module Educaționale Master</h2>
+                    <p class="text-slate-400 text-sm">Alege un modul pentru a aprofunda teoria și a susține examenul grilă.</p>
+                </div>
+                <!-- Filter tabs -->
+                <div id="module-tabs-list" class="flex flex-wrap gap-2">
+                    <!-- Dynamic Buttons -->
+                </div>
+            </div>
+
+            <!-- Active Module Content Area -->
+            <div id="module-display" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6">
+                <!-- Content populated dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 3: QUESTS & CTF CHALLENGES -->
+        <section id="tab-quests" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-white flex items-center">
+                    <i class="fa-solid fa-crosshairs text-cyber-green mr-3"></i> Provocări CTF (Capture The Flag)
+                </h2>
+                <p class="text-slate-400 text-sm">Analizează scenariile de mai jos, folosește Terminalul Linux pentru a investiga și sparge țintele, apoi introdu FLAG-ul.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="quest-cards-container">
+                <!-- Quest cards inserted dynamically -->
+            </div>
+        </section>
+
+        <!-- SECTION 4: LINUX TERMINAL SIMULATOR -->
+        <section id="tab-terminal" class="tab-content hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-white font-mono flex items-center">
+                        <i class="fa-solid fa-terminal text-cyber-green mr-3"></i> Virtual Linux Terminal (BASH)
+                    </h2>
+                    <p class="text-slate-400 text-xs">Sistem operare virtualizat cu suport pentru comenzi reale și instrumente de pentesting (nmap, hydra, base64, chmod, grep).</p>
+                </div>
+                <button onclick="clearTerminal()" class="px-3 py-1.5 text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">
+                    Clear Screen
+                </button>
+            </div>
+
+            <!-- Terminal Window -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden terminal-shadow font-mono text-xs sm:text-sm scanlines">
+                <!-- Terminal Header Bar -->
+                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                        <span class="text-xs text-slate-400 ml-2">root@cyber-academy: ~</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500">Kali Linux v2026.1 (x86_64)</div>
+                </div>
+
+                <!-- Terminal Body Output -->
+                <div id="terminal-output" class="p-4 h-[440px] overflow-y-auto space-y-2 text-slate-200">
+                    <div class="text-cyber-green">==================================================================</div>
+                    <div class="text-cyber-green font-bold">  WELCOME TO CYBERACADEMY VIRTUAL BASH SHELL (CTF ENVIRONMENT)</div>
+                    <div class="text-cyber-green">==================================================================</div>
+                    <div class="text-slate-400">Scrie <span class="text-yellow-400 font-bold">help</span> pentru a afișa toate comenzile disponibile.</div>
+                    <div class="text-slate-400">Scrie <span class="text-cyber-cyan font-bold">status</span> pentru a vedea misiunile CTF active.</div>
+                    <div class="text-slate-600 border-b border-slate-800/80 pb-2">------------------------------------------------------------------</div>
+                </div>
+
+                <!-- Command Line Input -->
+                <form id="terminal-form" onsubmit="handleTerminalCommand(event)" class="bg-slate-900/60 p-3 border-t border-slate-800 flex items-center space-x-2">
+                    <span class="text-cyber-green font-bold select-none" id="prompt-label">student@cyber-academy:~$</span>
+                    <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" 
+                           class="flex-1 bg-transparent border-none outline-none text-white font-mono focus:ring-0 text-xs sm:text-sm" placeholder="Introduceți comanda..." />
+                    <button type="submit" class="px-3 py-1 bg-cyber-green text-slate-950 font-bold text-xs rounded hover:bg-emerald-400 font-mono">Execută</button>
+                </form>
+            </div>
+
+            <!-- Quick Commands Palette -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 font-mono text-[11px]">
+                <button onclick="runQuickCmd('help')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">help</button>
+                <button onclick="runQuickCmd('ls -la')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">ls -la</button>
+                <button onclick="runQuickCmd('pwd')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">pwd</button>
+                <button onclick="runQuickCmd('cat /home/student/secret.txt')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">cat secret.txt</button>
+                <button onclick="runQuickCmd('base64 -d hash.txt')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">base64 -d</button>
+                <button onclick="runQuickCmd('nmap 192.168.1.100')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">nmap target</button>
+                <button onclick="runQuickCmd('hydra 192.168.1.100 ssh')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">hydra ssh</button>
+                <button onclick="runQuickCmd('sudo su')" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded text-slate-300">sudo su</button>
+            </div>
+        </section>
+
+        <!-- SECTION 5: TROPHIES & BADGES -->
+        <section id="tab-badges" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-white flex items-center">
+                    <i class="fa-solid fa-award text-yellow-400 mr-3"></i> Insigne & Realizări
+                </h2>
+                <p class="text-slate-400 text-sm">Deblochează insigne completând quiz-urile din module și rezolvând provocarile din terminal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="badges-grid">
+                <!-- Badges populated dynamically -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Notification Toast Popup -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 border border-cyber-green text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+        <div id="toast-icon" class="text-cyber-green text-lg"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <div id="toast-title" class="font-bold text-sm">Felicitări!</div>
+            <div id="toast-message" class="text-xs text-slate-300">Ai obținut un trofeu!</div>
+        </div>
+    </div>
+
+    <script>
+        // GLOBAL USER STATE
+        let userState = {
+            xp: 0,
+            completedQuizzes: [],
+            completedQuests: [],
+            unlockedBadges: [],
+            currentModuleIndex: 0,
+            isRoot: false
+        };
+
+        // RANKS DATA (10 LEVEL SYSTEM)
+        const RANKS = [
+            { minXp: 0, title: 'Novice Explorer' },
+            { minXp: 40, title: 'Script Cadet' },
+            { minXp: 90, title: 'Junior SysAdmin' },
+            { minXp: 150, title: 'Linux Practitioner' },
+            { minXp: 220, title: 'Network Analyst' },
+            { minXp: 300, title: 'Security Specialist' },
+            { minXp: 400, title: 'Penetration Tester' },
+            { minXp: 520, title: 'Incident Responder' },
+            { minXp: 650, title: 'Ethical Hacking Master' },
+            { minXp: 800, title: 'Cyber Architect' }
+        ];
+
+        // BADGES DATA
+        const BADGES = [
+            { id: 'b-it', name: 'Arhitect Hardware', icon: 'fa-microchip', color: 'text-cyber-green', req: 'Completează Quiz-ul Modulului 1' },
+            { id: 'b-os', name: 'Kernel Specialist', icon: 'fa-desktop', color: 'text-cyber-cyan', req: 'Completează Quiz-ul Modulului 2' },
+            { id: 'b-bash', name: 'Bash Ninja', icon: 'fa-terminal', color: 'text-yellow-400', req: 'Completează Quiz-ul Modulului 3' },
+            { id: 'b-malware', name: 'Malware Hunter', icon: 'fa-shield-virus', color: 'text-red-400', req: 'Completează Quiz-ul Modulului 4' },
+            { id: 'b-pentest', name: 'White Hat Pentester', icon: 'fa-user-ninja', color: 'text-cyber-purple', req: 'Completează Quiz-ul Modulului 5' },
+            { id: 'b-ctf', name: 'CTF Champion', icon: 'fa-trophy', color: 'text-yellow-500', req: 'Rezolvă toate cele 4 misiuni CTF' }
+        ];
+
+        // FUN FACTS DATA
+        const FUN_FACTS = [
+            "Stuxnet (2010) a fost primul vierme cibernetic militar cunoscut ce a distrus fizic centrifugele nucleare din Iran, modificându-le viteza de rotație.",
+            "WannaCry Ransomware (2017) a infectat peste 200.000 de calculatoare în 150 de țări folosind vulnerabilitatea EternalBlue dezvăluită din instrumentele NSA.",
+            "Kevin Mitnick a fost unul dintre cei mai faimoși hackeri din lume, demonstrând că 'Social Engineering' (manipularea umană) este mai eficientă decât spargerea de parole.",
+            "Mașina Enigma folosită de Germania în Al Doilea Război Mondial genera septilioane de combinații posibile, fiind spartă de Alan Turing și echipa sa din Bletchley Park.",
+            "Peste 95% din breșele de securitate din marile corporații încep cu un simplu email de tip Phishing trimis unui angajat."
+        ];
+
+        // 6 EXTENDED MASTER MODULES
+        const MODULES = [
+            {
+                id: 'mod-1',
+                title: '1. Bazele IT & Rețele',
+                icon: 'fa-microchip',
+                color: 'cyber-green',
+                desc: 'CPU, RAM, stiva TCP/IP, modelul OSI, adrese IP & Subnetting.',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 1: Arhitectura IT & Rețele de Calculatoare</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Pentru a proteja sau testa un sistem, trebuie mai întâi să înțelegi cum funcționează acesta la nivel de hardware și rețea.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-cyber-green text-sm mb-2"><i class="fa-solid fa-layer-group mr-2"></i>Modelul OSI (7 Straturi)</h4>
+                            <p class="text-xs text-slate-400">1. Fizic | 2. Data Link (MAC) | 3. Rețea (IP) | 4. Transport (TCP/UDP) | 5. Sesiune | 6. Prezentare | 7. Aplicație (HTTP/SSH)</p>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-cyber-cyan text-sm mb-2"><i class="fa-solid fa-network-wired mr-2"></i>Adrese IP & Subnetting</h4>
+                            <p class="text-xs text-slate-400">IPv4 (ex: 192.168.1.1) folosește 32 de biți. Subnet mask-ul (ex: /24 sau 255.255.255.0) împarte IP-ul în ID Rețea și ID Gazdă.</p>
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    question: "Care strat din Modelul OSI este responsabil de adresarea logică IP și rutarea pachetelor?",
+                    options: ["Stratul 2 (Data Link)", "Stratul 3 (Rețea / Network)", "Stratul 4 (Transport)", "Stratul 7 (Aplicație)"],
+                    correct: 1,
+                    xp: 40
+                }
+            },
+            {
+                id: 'mod-2',
+                title: '2. OS Internals & Kernel',
+                icon: 'fa-desktop',
+                color: 'cyber-cyan',
+                desc: 'Kernel vs User Mode, apeluri de sistem (Syscalls), permisiuni POSIX.',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 2: Arhitectura Sistemelor de Operare</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Sistemul de operare separă execuția codului în două moduri principale pentru a preveni prăbușirea sau compromiterea sistemului.
+                    </p>
+                    <div class="space-y-3 mb-4">
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs">
+                            <b class="text-cyber-cyan">Kernel Mode (Ring 0):</b> Are acces complet și nerestricționat la componentele hardware și memoria sistemului.
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs">
+                            <b class="text-cyber-cyan">User Mode (Ring 3):</b> Aplicațiile obișnuite (browser, editor text) rulează izolat. Pentru acces la disc sau rețea, solicită Kernel-ul prin <b>Syscalls</b> (apeluri de sistem).
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    question: "Ce modalitate folosesc aplicațiile din User Mode pentru a cere resurse hardware de la Kernel?",
+                    options: ["Firewall Rules", "Apeluri de Sistem (Syscalls)", "Antivirus Interrupts", "Modul BIOS"],
+                    correct: 1,
+                    xp: 45
+                }
+            },
+            {
+                id: 'mod-3',
+                title: '3. Linux CLI & Scripting',
+                icon: 'fa-brands fa-linux',
+                color: 'yellow-400',
+                desc: 'Comenzi Bash, redactare scripturi, automatizare, permisiuni SUID.',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 3: Linux CLI & Automatizare Bash</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Linux reprezintă fundamentul serverelor globale și al distribuțiilor de securitate (ex: Kali Linux).
+                    </p>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 mb-4 font-mono text-xs">
+                        <p><b class="text-yellow-400">Pipes (|):</b> Trimite ieșirea unei comenzi ca intrare pentru alta. (ex: <code class="text-white">cat file.txt | grep admin</code>)</p>
+                        <p><b class="text-yellow-400">Permisiuni POSIX:</b> Read (4), Write (2), Execute (1). Ex: <code class="text-white">chmod 755 script.sh</code></p>
+                        <p><b class="text-yellow-400">SUID Bit (chmod u+s):</b> Permite executarea unui fișier cu drepturile proprietarului (frecvent utilizat în privilege escalation).</p>
+                    </div>
+                `,
+                quiz: {
+                    question: "Ce valoare numerică chmod reprezintă permisiuni de citire (r=4), scriere (w=2) și execuție (x=1) pentru proprietar?",
+                    options: ["chmod 700", "chmod 644", "chmod 555", "chmod 777"],
+                    correct: 0,
+                    xp: 50
+                }
+            },
+            {
+                id: 'mod-4',
+                title: '4. Enciclopedie Malware',
+                icon: 'fa-bug',
+                color: 'red-400',
+                desc: 'Ransomware, Trojans, Rootkits, Zero-day & Fileless Malware.',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 4: Tipuri de Amenințări Cibernetice & Malware</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Software-ul rău intenționat evoluează constant pentru a ocoli detectarea soluțiilor clasice Antivirus.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-xs">
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <b class="text-red-400">Rootkit:</b> Malware proiectat să se ascundă adânc în Kernel (Ring 0), invizibil pentru Antivirus-ul din OS.
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <b class="text-red-400">Zero-Day:</b> Vulnerabilitate necunoscută încă de producătorul software-ului, fără patch de securitate disponibil.
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    question: "Cum se numește o vulnerabilitate cibernetică pentru care NU există încă un patch de securitate lansat de producător?",
+                    options: ["Phishing Attack", "Zero-Day Vulnerability", "SQL Injection", "Brute Force"],
+                    correct: 1,
+                    xp: 55
+                }
+            },
+            {
+                id: 'mod-5',
+                title: '5. Ethical Hacking & Web',
+                icon: 'fa-user-ninja',
+                color: 'purple-400',
+                desc: 'Pentesting, SQLi, XSS, Cryptography (RSA/AES), Hashing (SHA256).',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 5: Ethical Hacking & Securitate Web</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Testarea vulnerabilităților aplicațiilor web și criptarea datelor reprezintă pilonii principali ai securității.
+                    </p>
+                    <div class="space-y-2 mb-4 text-xs">
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <b class="text-cyber-purple">SQL Injection (SQLi):</b> Injectarea de cod SQL malițios în câmpurile de input ale unei aplicații pentru a extrage baza de date (ex: <code class="text-white">' OR 1=1 --</code>).
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <b class="text-cyber-purple">Cross-Site Scripting (XSS):</b> Injectarea de scripturi JavaScript care rulează în browserul altor utilizatori pentru a le fura cookie-urile de sesiune.
+                        </div>
+                    </div>
+                `,
+                quiz: {
+                    question: "Ce tip de atac web permite executarea neautorizată de comenzi în baza de date prin intermediul unui formular web?",
+                    options: ["XSS (Cross-Site Scripting)", "SQL Injection (SQLi)", "DDoS Attack", "Man-in-the-Middle"],
+                    correct: 1,
+                    xp: 60
+                }
+            },
+            {
+                id: 'mod-6',
+                title: '6. Defense & Forensics',
+                icon: 'fa-shield-halved',
+                color: 'cyber-cyan',
+                desc: 'Firewall-uri, IDS/IPS, Analiză de pachete Wireshark & Incident Response.',
+                theory: `
+                    <h3 class="text-xl font-bold text-white mb-3">Modulul 6: Defense, IDS/IPS & Forensics</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                        Blue Team (Echipa de apărare) monitorizează traficul de rețea și jurnalele de sistem (logs) pentru a identifica intruși.
+                    </p>
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 mb-4 text-xs">
+                        <p><b class="text-cyber-cyan">IDS vs IPS:</b> Intrusion Detection System (doar alertează) vs Intrusion Prevention System (blochează automat traficul suspect).</p>
+                        <p><b class="text-cyber-cyan">Analiza Forensică:</b> Colectarea și examinarea probelor digitale (jurnale, dump-uri de memorie RAM) după producerea unui incident cibernetic.</p>
+                    </div>
+                `,
+                quiz: {
+                    question: "Care este diferența principală între un sistem IDS și un sistem IPS?",
+                    options: [
+                        "IDS blochează traficul, IPS doar trimite alerte",
+                        "IDS doar detectează și alertează, în timp ce IPS blochează activ pachetele rău-intenționate",
+                        "IDS funcționează doar offline",
+                        "Nu există nicio diferență"
+                    ],
+                    correct: 1,
+                    xp: 65
+                }
+            }
+        ];
+
+        // 4 ADVANCED CTF QUESTS
+        const QUESTS = [
+            {
+                id: 'quest-1',
+                title: 'Misiunea 1: Găsește Fișierul Secret',
+                difficulty: 'Ușor',
+                rewardXP: 60,
+                description: 'Explorează directorul `/home/student` în terminalul Linux și citește conținutul fișierului `secret.txt`.',
+                hint: 'Folosește comenzile "ls" și "cat /home/student/secret.txt" în terminal.',
+                flag: 'FLAG{welcome_to_master_ctf}'
+            },
+            {
+                id: 'quest-2',
+                title: 'Misiunea 2: Decodifică Parola Base64',
+                difficulty: 'Mediu',
+                rewardXP: 80,
+                description: 'În directorul curent există un fișier numit `hash.txt` codificat în Base64. Decodifică-l pentru a afla flag-ul.',
+                hint: 'Rulează comanda: base64 -d hash.txt în terminal.',
+                flag: 'FLAG{base64_decode_master}'
+            },
+            {
+                id: 'quest-3',
+                title: 'Misiunea 3: Scanarea Serverului Vulnerabil',
+                difficulty: 'Avansat',
+                rewardXP: 100,
+                description: 'Scanează IP-ul 192.168.1.100 folosind instrumentul `nmap` pentru a descoperi serviciile și porturile deschise.',
+                hint: 'Scrie în terminal: nmap 192.168.1.100',
+                flag: 'FLAG{nmap_stealth_scan_success}'
+            },
+            {
+                id: 'quest-4',
+                title: 'Misiunea 4: Escaladarea Privilegiilor (Root)',
+                difficulty: 'Expert',
+                rewardXP: 120,
+                description: 'Execută o atac de brute-force pe serviciul SSH sau folosește sudo su în terminal pentru a deveni utilizator ROOT.',
+                hint: 'Folosește comanda "hydra 192.168.1.100 ssh" sau "sudo su" în terminal.',
+                flag: 'FLAG{root_privilege_escalated}'
+            }
+        ];
+
+        // VIRTUAL FILESYSTEM FOR TERMINAL
+        let currentDirectory = '/home/student';
+        const virtualFileSystem = {
+            '/home/student': {
+                'secret.txt': 'FLAG{welcome_to_master_ctf}',
+                'hash.txt': 'RkxBR3tiYXNlNjRfZGVjb2RlX21hc3Rlcn0=' // FLAG{base64_decode_master} encoded
+            },
+            '/root': {
+                'root_flag.txt': 'FLAG{root_privilege_escalated}'
+            }
+        };
+
+        // INITIALIZATION ON PAGE LOAD
+        window.onload = function() {
+            renderRoadmap();
+            renderModuleTabs();
+            openModule(0);
+            renderQuests();
+            renderBadges();
+            updateUIStats();
+        };
+
+        // TAB SWITCHING SYSTEM
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-cyber-green', 'bg-slate-800', 'border', 'border-cyber-green/30');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if(activeTab) activeTab.classList.remove('hidden');
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.add('text-cyber-green', 'bg-slate-800', 'border', 'border-cyber-green/30');
+                activeNav.classList.remove('text-slate-300');
+            }
+        }
+
+        // ROADMAP RENDER
+        function renderRoadmap() {
+            const grid = document.getElementById('roadmap-grid');
+            grid.innerHTML = MODULES.map((m, idx) => `
+                <div onclick="switchTab('modules'); openModule(${idx});" class="cursor-pointer bg-slate-950 hover:border-cyber-green/40 border border-slate-800 p-4 rounded-xl transition-all group">
+                    <div class="text-${m.color} text-xl mb-2 group-hover:scale-110 transition-transform"><i class="fa-solid ${m.icon}"></i></div>
+                    <div class="font-bold text-sm text-white mb-1">${m.title}</div>
+                    <div class="text-xs text-slate-400">${m.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        // RENDER MODULE TABS & CONTENT
+        function renderModuleTabs() {
+            const container = document.getElementById('module-tabs-list');
+            container.innerHTML = MODULES.map((mod, index) => `
+                <button onclick="openModule(${index})" id="mod-tab-${index}" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-800 bg-slate-950 text-slate-400 hover:text-white transition-all">
+                    <i class="fa-solid ${mod.icon} mr-1.5"></i>${mod.title.split('.')[0]}
+                </button>
+            `).join('');
+        }
+
+        function openModule(index) {
+            userState.currentModuleIndex = index;
+            const mod = MODULES[index];
+
+            MODULES.forEach((_, i) => {
+                const btn = document.getElementById(`mod-tab-${i}`);
+                if(btn) {
+                    btn.className = (i === index) 
+                        ? "px-3 py-1.5 rounded-lg text-xs font-medium border border-cyber-green/40 bg-slate-800 text-cyber-green"
+                        : "px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-800 bg-slate-950 text-slate-400 hover:text-white";
+                }
+            });
+
+            const isPassed = userState.completedQuizzes.includes(mod.id);
+            const display = document.getElementById('module-display');
+            display.innerHTML = `
+                <div class="space-y-6">
+                    ${mod.theory}
+                    
+                    <div class="border-t border-slate-800 pt-6">
+                        <h4 class="text-sm font-bold text-white mb-3 flex items-center font-mono">
+                            <i class="fa-solid fa-clipboard-question text-cyber-green mr-2"></i> EXAMEN GRILĂ MODULE (+${mod.quiz.xp} XP)
+                        </h4>
+                        
+                        <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                            <p class="text-sm text-slate-200 font-medium">${mod.quiz.question}</p>
+                            <div class="space-y-2">
+                                ${mod.quiz.options.map((opt, oIdx) => `
+                                    <button onclick="checkQuizAnswer(${index}, ${oIdx})" ${isPassed ? 'disabled' : ''} 
+                                        class="quiz-opt-btn w-full text-left p-3 rounded-lg text-xs font-medium border border-slate-800 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-700 transition-all text-slate-300 flex items-center justify-between">
+                                        <span>${opt}</span>
+                                        <i class="fa-regular fa-circle text-slate-600"></i>
+                                    </button>
+                                `).join('')}
+                            </div>
+                            ${isPassed ? '<div class="text-xs font-mono text-cyber-green flex items-center"><i class="fa-solid fa-circle-check mr-1.5"></i> Ai trecut acest test cu succes!</div>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkQuizAnswer(moduleIdx, selectedIdx) {
+            const mod = MODULES[moduleIdx];
+            if(userState.completedQuizzes.includes(mod.id)) return;
+
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+            
+            if(selectedIdx === mod.quiz.correct) {
+                buttons[selectedIdx].className = "w-full text-left p-3 rounded-lg text-xs font-medium border border-cyber-green bg-cyber-green/10 text-cyber-green flex items-center justify-between";
+                buttons[selectedIdx].innerHTML = `<span>${mod.quiz.options[selectedIdx]}</span> <i class="fa-solid fa-circle-check text-cyber-green"></i>`;
+                
+                userState.completedQuizzes.push(mod.id);
+                
+                // Unlock Badge corresponding to module
+                const badgeMap = ['b-it', 'b-os', 'b-bash', 'b-malware', 'b-pentest', 'b-ctf'];
+                unlockBadge(badgeMap[moduleIdx]);
+
+                addXP(mod.quiz.xp, `Quiz completat: ${mod.title}`);
+                setTimeout(() => openModule(moduleIdx), 1200);
+            } else {
+                buttons[selectedIdx].className = "w-full text-left p-3 rounded-lg text-xs font-medium border border-red-500/50 bg-red-500/10 text-red-400 flex items-center justify-between";
+                buttons[selectedIdx].innerHTML = `<span>${mod.quiz.options[selectedIdx]}</span> <i class="fa-solid fa-circle-xmark text-red-400"></i>`;
+                showToast("Răspuns Incorect", "Reanalizează teoria și încearcă din nou.", "red");
+            }
+        }
+
+        // RENDER QUESTS (CTF)
+        function renderQuests() {
+            const container = document.getElementById('quest-cards-container');
+            container.innerHTML = QUESTS.map(q => {
+                const isDone = userState.completedQuests.includes(q.id);
+                return `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-950 border border-slate-800 text-slate-400">${q.difficulty}</span>
+                                <span class="text-xs font-mono font-bold text-yellow-400">+${q.rewardXP} XP</span>
+                            </div>
+                            <h4 class="font-bold text-white text-sm mb-1">${q.title}</h4>
+                            <p class="text-slate-400 text-xs mb-3 leading-relaxed">${q.description}</p>
+                            <div class="text-[11px] font-mono text-cyber-cyan bg-slate-950 p-2.5 rounded border border-slate-800">
+                                💡 Indiciu: ${q.hint}
+                            </div>
+                        </div>
+
+                        ${isDone ? `
+                            <div class="bg-cyber-green/10 border border-cyber-green/30 text-cyber-green p-2 rounded text-center text-xs font-mono font-bold flex items-center justify-center">
+                                <i class="fa-solid fa-shield-check mr-2"></i> FLAG VALIDAT - MISIUNE COMPLETĂ
+                            </div>
+                        ` : `
+                            <div class="space-y-2">
+                                <input type="text" id="flag-input-${q.id}" placeholder="Introdu FLAG{...}" class="w-full bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-cyber-green" />
+                                <button onclick="submitFlag('${q.id}')" class="w-full py-2 rounded bg-cyber-green hover:bg-emerald-400 text-slate-950 text-xs font-bold font-mono transition-all">
+                                    Trimite Flag
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function submitFlag(questId) {
+            const quest = QUESTS.find(q => q.id === questId);
+            const input = document.getElementById(`flag-input-${questId}`);
+            if(!quest || !input) return;
+
+            if(input.value.trim() === quest.flag) {
+                userState.completedQuests.push(quest.id);
+                addXP(quest.rewardXP, `CTF Finalizat: ${quest.title}`);
+                
+                // Check if all CTF completed for trophy
+                if(userState.completedQuests.length === QUESTS.length) {
+                    unlockBadge('b-ctf');
+                }
+                
+                renderQuests();
+            } else {
+                showToast("Flag Incorect!", "Verifică comenzile în Terminal Linux.", "red");
+            }
+        }
+
+        // RENDER BADGES / TROPHIES
+        function renderBadges() {
+            const grid = document.getElementById('badges-grid');
+            grid.innerHTML = BADGES.map(b => {
+                const isUnlocked = userState.unlockedBadges.includes(b.id);
+                return `
+                    <div class="bg-slate-900 border ${isUnlocked ? 'border-yellow-500/40' : 'border-slate-800'} rounded-xl p-5 flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl ${isUnlocked ? b.color : 'text-slate-600'}">
+                            <i class="fa-solid ${b.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm ${isUnlocked ? 'text-white' : 'text-slate-500'}">${b.name}</h4>
+                            <p class="text-[11px] text-slate-400 mb-1">${b.req}</p>
+                            <span class="text-[10px] font-mono ${isUnlocked ? 'text-yellow-400' : 'text-slate-600'}">
+                                ${isUnlocked ? '✓ DEBLOCAT' : '🔒 BLOCAT'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function unlockBadge(badgeId) {
+            if(!userState.unlockedBadges.includes(badgeId)) {
+                userState.unlockedBadges.push(badgeId);
+                const badge = BADGES.find(b => b.id === badgeId);
+                if(badge) {
+                    showToast("Trofeu Nou Deblocat!", badge.name, "green");
+                }
+                renderBadges();
+            }
+        }
+
+        // VIRTUAL TERMINAL BASH ENGINE
+        function handleTerminalCommand(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('terminal-input');
+            const rawCmd = inputEl.value.trim();
+            if(!rawCmd) return;
+
+            const outputEl = document.getElementById('terminal-output');
+            
+            // Render Command Prompt Line
+            const cmdLine = document.createElement('div');
+            cmdLine.className = 'flex items-center space-x-2 text-slate-300';
+            const userPrompt = userState.isRoot ? 'root@cyber-academy:#' : `student@cyber-academy:${currentDirectory}$`;
+            cmdLine.innerHTML = `<span class="${userState.isRoot ? 'text-red-500' : 'text-cyber-green'} font-bold">${userPrompt}</span> <span>${escapeHtml(rawCmd)}</span>`;
+            outputEl.appendChild(cmdLine);
+
+            const args = rawCmd.split(' ');
+            const cmd = args[0].toLowerCase();
+            let response = '';
+
+            switch(cmd) {
+                case 'help':
+                    response = `Comenzi disponibile în Kali Bash:
+  ls -la         - Listează fișierele și directoarele
+  cd [dir]       - Schimbă directorul curent
+  cat [file]     - Afișează conținutul unui fișier
+  pwd            - Afișează cale director de lucru
+  whoami / id    - Identitate utilizator
+  base64 -d [f]  - Decodifică un fișier base64
+  nmap [ip]      - Scannner de porturi rețea
+  hydra [ip] [s] - Simulator atac Brute Force
+  sudo su        - Escaladare privilegii administrator (root)
+  status         - Stare misiuni CTF
+  clear          - Curăță ecranul terminalului`;
+                    break;
+                case 'ls':
+                    if(currentDirectory === '/home/student') {
+                        response = '<span class="text-slate-200">secret.txt</span>   <span class="text-slate-200">hash.txt</span>';
+                    } else if(currentDirectory === '/root') {
+                        if(userState.isRoot) {
+                            response = '<span class="text-yellow-400 font-bold">root_flag.txt</span>';
+                        } else {
+                            response = 'ls: cannot open directory \'/root\': Permission denied';
+                        }
+                    } else {
+                        response = '<span class="text-cyber-cyan font-bold">bin/  etc/  home/  var/  root/</span>';
+                    }
+                    break;
+                case 'pwd':
+                    response = currentDirectory;
+                    break;
+                case 'whoami':
+                    response = userState.isRoot ? 'root' : 'student';
+                    break;
+                case 'id':
+                    response = userState.isRoot 
+                        ? 'uid=0(root) gid=0(root) groups=0(root)'
+                        : 'uid=1000(student) gid=1000(student) groups=1000(student)';
+                    break;
+                case 'cd':
+                    const dir = args[1];
+                    if(!dir || dir === '~' || dir === '/home/student') {
+                        currentDirectory = '/home/student';
+                        response = 'OK: /home/student';
+                    } else if(dir === '/' || dir === '/root') {
+                        if(dir === '/root' && !userState.isRoot) {
+                            response = 'bash: cd: /root: Permission denied';
+                        } else {
+                            currentDirectory = dir;
+                            response = `OK: ${dir}`;
+                        }
+                    } else {
+                        response = `bash: cd: ${dir}: Director inexistent.`;
+                    }
+                    document.getElementById('prompt-label').innerText = userState.isRoot ? 'root@cyber-academy:#' : `student@cyber-academy:${currentDirectory}$`;
+                    break;
+                case 'cat':
+                    const file = args[1];
+                    if(!file) {
+                        response = 'Utilizare: cat [fișier]';
+                    } else if(file === 'secret.txt' || file === '/home/student/secret.txt') {
+                        response = `<span class="text-yellow-400 font-bold">FLAG{welcome_to_master_ctf}</span>`;
+                    } else if(file === 'hash.txt' || file === '/home/student/hash.txt') {
+                        response = 'RkxBR3tiYXNlNjRfZGVjb2RlX21hc3Rlcn0=';
+                    } else if(file === 'root_flag.txt' || file === '/root/root_flag.txt') {
+                        if(userState.isRoot) {
+                            response = `<span class="text-yellow-400 font-bold">FLAG{root_privilege_escalated}</span>`;
+                        } else {
+                            response = 'cat: /root/root_flag.txt: Permission denied';
+                        }
+                    } else {
+                        response = `cat: ${file}: Fișierul nu a fost găsit.`;
+                    }
+                    break;
+                case 'base64':
+                    if(args[1] === '-d' && (args[2] === 'hash.txt' || args[2] === '/home/student/hash.txt')) {
+                        response = `Decodificat: <span class="text-yellow-400 font-bold">FLAG{base64_decode_master}</span>`;
+                    } else {
+                        response = 'Utilizare: base64 -d hash.txt';
+                    }
+                    break;
+                case 'nmap':
+                    const ip = args[1];
+                    if(ip === '192.168.1.100') {
+                        response = `Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for target-server (192.168.1.100)
+Host is up (0.0012s latency).
+PORT     STATE SERVICE     VERSION
+22/tcp   open  ssh         OpenSSH 8.9p1
+80/tcp   open  http        Apache httpd 2.4.52
+3306/tcp open  mysql       MySQL 8.0
+
+[+] SCAN COMPLETE: Service banner: <span class="text-yellow-400 font-bold">FLAG{nmap_stealth_scan_success}</span>`;
+                    } else {
+                        response = 'Utilizare: nmap 192.168.1.100';
+                    }
+                    break;
+                case 'hydra':
+                    if(args[1] === '192.168.1.100' && args[2] === 'ssh') {
+                        response = `Hydra v9.5 starting brute force attack on 192.168.1.100:22 (SSH)...
+[DATA] 16 tasks, 1 server, 100 login credentials tested
+[22][ssh] host: 192.168.1.100   login: root   password: toor
+[+] SUCCESS: Found credentials for ROOT!
+[+] FLAG: <span class="text-yellow-400 font-bold">FLAG{root_privilege_escalated}</span>`;
+                    } else {
+                        response = 'Utilizare: hydra 192.168.1.100 ssh';
+                    }
+                    break;
+                case 'sudo':
+                    if(args[1] === 'su') {
+                        userState.isRoot = true;
+                        currentDirectory = '/root';
+                        response = 'Escaladare reușită! Acum ești utilizator ROOT (Administrator).';
+                        document.getElementById('prompt-label').innerText = 'root@cyber-academy:#';
+                    } else {
+                        response = 'Utilizare: sudo su';
+                    }
+                    break;
+                case 'status':
+                    response = `Misiuni CTF Rezolvate: ${userState.completedQuests.length} / ${QUESTS.length}`;
+                    break;
+                case 'clear':
+                    clearTerminal();
+                    inputEl.value = '';
+                    return;
+                default:
+                    response = `bash: command not found: ${cmd}. Scrie 'help' pentru instrucțiuni.`;
+            }
+
+            const respLine = document.createElement('div');
+            respLine.className = 'text-slate-400 whitespace-pre-wrap pl-2 border-l-2 border-slate-800 my-1';
+            respLine.innerHTML = response;
+            outputEl.appendChild(respLine);
+
+            inputEl.value = '';
+            outputEl.scrollTop = outputEl.scrollHeight;
+        }
+
+        function runQuickCmd(cmd) {
+            document.getElementById('terminal-input').value = cmd;
+            handleTerminalCommand(new Event('submit'));
+        }
+
+        function clearTerminal() {
+            const outputEl = document.getElementById('terminal-output');
+            outputEl.innerHTML = `<div class="text-slate-400">Terminal curățat. Tastați <span class="text-cyber-green font-bold">help</span> pentru comenzi.</div>`;
+        }
+
+        // GAMIFICATION & STATS UPDATE
+        function addXP(amount, reason) {
+            userState.xp += amount;
+            updateUIStats();
+            showToast("XP Primit!", `${reason} (+${amount} XP)`, "green");
+        }
+
+        function updateUIStats() {
+            let currentRank = RANKS[0].title;
+            let currentLevelIdx = 1;
+
+            for(let i = 0; i < RANKS.length; i++) {
+                if(userState.xp >= RANKS[i].minXp) {
+                    currentRank = RANKS[i].title;
+                    currentLevelIdx = i + 1;
+                }
+            }
+
+            document.getElementById('user-xp').innerText = `${userState.xp} XP`;
+            document.getElementById('user-rank').innerText = currentRank;
+            document.getElementById('dash-rank-name').innerText = currentRank;
+            document.getElementById('rank-badge').innerText = `Lvl ${currentLevelIdx}`;
+
+            const nextRank = RANKS[currentLevelIdx] || { minXp: 1000 };
+            const prevRankXP = RANKS[currentLevelIdx - 1].minXp;
+            const progressPercent = Math.min(100, Math.round(((userState.xp - prevRankXP) / (nextRank.minXp - prevRankXP)) * 100));
+            
+            document.getElementById('xp-bar').style.width = `${progressPercent}%`;
+            document.getElementById('xp-text').innerText = `${userState.xp} / ${nextRank.minXp} XP`;
+
+            document.getElementById('stat-quizzes').innerText = `${userState.completedQuizzes.length} / ${MODULES.length}`;
+            document.getElementById('stat-quests').innerText = `${userState.completedQuests.length} / ${QUESTS.length}`;
+            document.getElementById('stat-badges-count').innerText = `${userState.unlockedBadges.length} / ${BADGES.length}`;
+        }
+
+        // FUN FACTS ROTATION
+        let factIdx = 0;
+        function nextFact() {
+            factIdx = (factIdx + 1) % FUN_FACTS.length;
+            document.getElementById('daily-fact').innerText = `"${FUN_FACTS[factIdx]}"`;
+        }
+
+        // TOAST NOTIFICATION
+        function showToast(title, message, color = 'green') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+
+            if(color === 'red') {
+                toast.className = toast.className.replace('border-cyber-green', 'border-red-500');
+                icon.className = 'text-red-500 text-lg';
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            } else {
+                toast.className = toast.className.replace('border-red-500', 'border-cyber-green');
+                icon.className = 'text-cyber-green text-lg';
+                icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
